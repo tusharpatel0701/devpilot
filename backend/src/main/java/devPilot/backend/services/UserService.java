@@ -46,7 +46,7 @@ public class UserService {
 
 
     @Transactional(readOnly = true)
-    public User requiredId(UUID id){
+    public User requiredById(UUID id){
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
