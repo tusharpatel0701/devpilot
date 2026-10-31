@@ -1,166 +1,100 @@
+
 import type { SVGProps } from "react";
 import {
-  siJavascript,
-  siTypescript,
-  siPython,
-  siJava,
-  siC,
-  siCplusplus,
-  siCsharp,
-  siGo,
-  siRust,
-  siRuby,
-  siPhp,
-  siSwift,
-  siKotlin,
-  siDart,
-  siHtml5,
-  siCss3,
-  siSass,
-  siLess,
-  siLua,
-  siPerl,
-  siR,
-  siScala,
-  siHaskell,
-  siElixir,
-  siErlang,
-  siClojure,
-  siFsharp,
-  siFortran,
-  siJulia,
-  siSolidity,
-  siWebassembly,
-  siGnubash,
-  siPowershell,
-  siMarkdown,
-  siJson,
-  siYaml,
-} from "simple-icons";
-import type { SimpleIcon } from "simple-icons";
+  Code2,
+  FileCode2,
+  Terminal,
+  Braces,
+  Database,
+} from "lucide-react";
 
-const LANGUAGE_ICONS: Record<string, SimpleIcon> = {
-  javascript: siJavascript,
-  js: siJavascript,
-  typescript: siTypescript,
-  ts: siTypescript,
-  python: siPython,
-  py: siPython,
-  java: siJava,
-  c: siC,
-  "c++": siCplusplus,
-  cpp: siCplusplus,
-  cxx: siCplusplus,
-  "c#": siCsharp,
-  csharp: siCsharp,
-  cs: siCsharp,
-  go: siGo,
-  golang: siGo,
-  rust: siRust,
-  ruby: siRuby,
-  rb: siRuby,
-  php: siPhp,
-  swift: siSwift,
-  kotlin: siKotlin,
-  kt: siKotlin,
-  dart: siDart,
-  html: siHtml5,
-  html5: siHtml5,
-  css: siCss3,
-  css3: siCss3,
-  scss: siSass,
-  sass: siSass,
-  less: siLess,
-  lua: siLua,
-  perl: siPerl,
-  r: siR,
-  scala: siScala,
-  haskell: siHaskell,
-  hs: siHaskell,
-  elixir: siElixir,
-  ex: siElixir,
-  erlang: siErlang,
-  clojure: siClojure,
-  clj: siClojure,
-  "f#": siFsharp,
-  fsharp: siFsharp,
-  fortran: siFortran,
-  julia: siJulia,
-  solidity: siSolidity,
-  sol: siSolidity,
-  webassembly: siWebassembly,
-  wasm: siWebassembly,
-  shell: siGnubash,
-  bash: siGnubash,
-  sh: siGnubash,
-  zsh: siGnubash,
-  powershell: siPowershell,
-  ps1: siPowershell,
-  markdown: siMarkdown,
-  md: siMarkdown,
-  json: siJson,
-  yaml: siYaml,
-  yml: siYaml,
+interface LanguageIconProps extends SVGProps<SVGSVGElement> {
+  language: string;
+  colored?: boolean;
+  variant?: "plain" | "tile";
+}
+
+const languageColors: Record<string, string> = {
+  javascript: "#F7DF1E",
+  typescript: "#3178C6",
+  python: "#3776AB",
+  java: "#E76F00",
+  go: "#00ADD8",
+  rust: "#DEA584",
+  ruby: "#CC342D",
+  php: "#777BB4",
+  swift: "#F05138",
+  kotlin: "#7F52FF",
+  dart: "#0175C2",
+  html: "#E34F26",
+  css: "#1572B6",
+  c: "#A8B9CC",
+  "c++": "#00599C",
+  "c#": "#68217A",
+  vue: "#42B883",
+  svelte: "#FF3E00",
+  dockerfile: "#2496ED",
+  shell: "#4EAA25",
+  bash: "#4EAA25",
+  sql: "#4479A1",
 };
 
-function normalizeLanguage(language: string): string {
-  return language.trim().toLowerCase().replace(/\s+/g, " ");
-}
-
-function GenericCodeIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14" />
-    </svg>
-  );
-}
-
-export interface LanguageIconProps extends SVGProps<SVGSVGElement> {
-  /** Language name, preferably the key returned by GitHub's languages API. */
-  language: string;
-  /** Use the brand color from Simple Icons. Defaults to true. */
-  colored?: boolean;
-}
+const fileLanguages = new Set([
+  "javascript", "typescript", "python", "java", "go", "rust",
+  "ruby", "php", "swift", "kotlin", "dart", "html", "css",
+  "c", "c++", "c#", "vue", "svelte",
+]);
 
 export function LanguageIcon({
   language,
   colored = true,
+  variant = "plain",
   className,
   ...svgProps
 }: LanguageIconProps) {
-  const icon = LANGUAGE_ICONS[normalizeLanguage(language)];
+  const key = language.trim().toLowerCase();
+  const color = colored ? languageColors[key] : undefined;
+  const isTile = variant === "tile";
 
-  if (!icon) {
-    return (
-      <GenericCodeIcon
-        className={className}
-        role="img"
-        aria-label={`${language} language`}
-        {...svgProps}
-      />
-    );
-  }
+  const Icon = ["bash", "shell", "powershell", "sh"].includes(key)
+    ? Terminal
+    : ["json", "yaml", "toml"].includes(key)
+      ? Braces
+      : ["sql", "plsql"].includes(key)
+        ? Database
+        : fileLanguages.has(key)
+          ? FileCode2
+          : Code2;
 
   return (
     <svg
-      role="img"
-      aria-label={`${language} language`}
       viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      fill={colored ? `#${icon.hex}` : "currentColor"}
       className={className}
+      aria-label={`${language} language`}
+      role="img"
       {...svgProps}
     >
-      <path d={icon.path} transform="scale(0.75) translate(4 4)" />
+      {isTile && (
+        <rect
+          x="1"
+          y="1"
+          width="22"
+          height="22"
+          rx="6"
+          fill={color ?? "currentColor"}
+          fillOpacity="0.12"
+        />
+      )}
+      <Icon
+        x={isTile ? 5 : 3}
+        y={isTile ? 5 : 3}
+        width={isTile ? 14 : 18}
+        height={isTile ? 14 : 18}
+        stroke={color ?? "currentColor"}
+        strokeWidth={1.8}
+      />
     </svg>
   );
 }

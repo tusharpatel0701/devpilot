@@ -1,4 +1,3 @@
-
 import type { SVGProps } from "react";
 
 export function DevPilotIcon(props: SVGProps<SVGSVGElement>) {
@@ -21,10 +20,24 @@ export function DevPilotIcon(props: SVGProps<SVGSVGElement>) {
                     gradientUnits="userSpaceOnUse"
                 >
                     <stop stopColor="#8B5CF6" />
+                    <stop offset="0.6" stopColor="#4F46E5" />
                     <stop offset="1" stopColor="#2563EB" />
                 </linearGradient>
+
+                <radialGradient
+                    id="devpilot-icon-shine"
+                    cx="0"
+                    cy="0"
+                    r="1"
+                    gradientUnits="userSpaceOnUse"
+                    gradientTransform="translate(16 10) rotate(45) scale(48)"
+                >
+                    <stop stopColor="white" stopOpacity="0.35" />
+                    <stop offset="1" stopColor="white" stopOpacity="0" />
+                </radialGradient>
             </defs>
 
+            {/* Tile */}
             <rect
                 x="3"
                 y="3"
@@ -33,36 +46,35 @@ export function DevPilotIcon(props: SVGProps<SVGSVGElement>) {
                 rx="17"
                 fill="url(#devpilot-icon-gradient)"
             />
-
-            {/* Code brackets */}
-            <path
-                d="M23 21L13 32L23 43"
-                stroke="white"
-                strokeWidth="4.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            <rect
+                x="3"
+                y="3"
+                width="58"
+                height="58"
+                rx="17"
+                fill="url(#devpilot-icon-shine)"
             />
 
-            <path
-                d="M41 21L51 32L41 43"
-                stroke="white"
-                strokeWidth="4.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
+            {/* Code lines streaming into the pilot */}
+            <g stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.6">
+                <path d="M11 25H19" />
+                <path d="M11 32H24" />
+                <path d="M11 39H19" />
+            </g>
 
-            {/* Central D-shaped pilot mark */}
+            {/* Navigation arrow: the "pilot" */}
             <path
-                d="M29 20H33C40 20 44 24.5 44 32C44 39.5 40 44 33 44H29V20Z"
+                d="M25 17L53 32L25 47L32 32Z"
                 fill="white"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinejoin="round"
             />
 
+            {/* AI sparkle */}
             <path
-                d="M29 27L24 32L29 37"
-                stroke="white"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                d="M49 9L50.6 13.4L55 15L50.6 16.6L49 21L47.4 16.6L43 15L47.4 13.4Z"
+                fill="white"
             />
         </svg>
     );

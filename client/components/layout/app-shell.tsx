@@ -1,24 +1,3 @@
-// import { cn } from "@/lib/utils";
-// import { DevPilotIcon } from "../icons/devpilot-icon";
-
-// export function BrandMark({ className }: { className?: string }) {
-//     return (
-//         <div
-//             className={cn(
-//                 "flex items-center gap-2.5 font-semibold tracking-tight",
-//                 className
-//             )}
-//         >
-//             <DevPilotIcon className="size-8 rounded-[10px]" />
-//             <span className="font-heading text-[1.05rem] leading-none">
-//                 DevPilot
-//             </span>
-//         </div>
-//     );
-// } 
-
-
-
 "use client";
 
 import Link from "next/link";
@@ -40,7 +19,6 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
@@ -59,10 +37,7 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-    dashboardNavGroups,
-    isDashboardNavActive,
-} from "@/lib/dashboard-nav";
+import { dashboardNavGroups } from "@/lib/dashboard-nav";
 import { cn } from "@/lib/utils";
 
 export function AppShell({
@@ -86,6 +61,24 @@ export function AppShell({
 
     const displayName =
         user?.displayName || user?.githubUsername || "Developer";
+
+    const avatarSrc =
+        user?.avatarUrl ||
+        (user?.githubUsername
+            ? `https://github.com/${user.githubUsername}.png`
+            : undefined);
+
+    // Only one nav item can be active: the one with the longest matching href.
+    // This stops /dashboard from also lighting up on /dashboard/repositories.
+    const allHrefs = dashboardNavGroups.flatMap((group) =>
+        group.items.map((item) => item.href)
+    );
+
+    const activeHref = allHrefs
+        .filter(
+            (href) => pathname === href || pathname.startsWith(`${href}/`)
+        )
+        .sort((a, b) => b.length - a.length)[0];
 
     const handleLogout = () => {
         logout.mutate();
@@ -128,10 +121,7 @@ export function AppShell({
                                 <SidebarMenu>
                                     {group.items.map((item) => {
                                         const active =
-                                            isDashboardNavActive(
-                                                pathname,
-                                                item.href
-                                            );
+                                            item.href === activeHref;
 
                                         const Icon = item.icon;
 
@@ -170,7 +160,7 @@ export function AppShell({
                                 >
                                     <Avatar className="size-8">
                                         <AvatarImage
-                                            src={user?.avatarUrl || ""}
+                                            src={avatarSrc}
                                             alt={displayName}
                                         />
                                         <AvatarFallback>
@@ -191,31 +181,35 @@ export function AppShell({
                                 </DropdownMenuTrigger>
 
                                 <DropdownMenuContent
-    className="w-56"
-    side="top"
-    align="end"
->
-    <DropdownMenuGroup>
-        <DropdownMenuLabel>
-            My Account
-        </DropdownMenuLabel>
+                                    className="w-56"
+                                    side="top"
+                                    align="end"
+                                >
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuLabel>
+                                            My Account
+                                        </DropdownMenuLabel>
 
-        <DropdownMenuItem
-            onClick={() => router.push("/dashboard/settings")}
-        >
-            <Settings />
-            Settings
-        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                router.push("/dashboard/settings")
+                                            }
+                                        >
+                                            <Settings />
+                                            Settings
+                                        </DropdownMenuItem>
 
-        <DropdownMenuItem
-            onClick={handleLogout}
-            disabled={logout.isPending}
-        >
-            <LogOut />
-            {logout.isPending ? "Signing out..." : "Log out"}
-        </DropdownMenuItem>
-    </DropdownMenuGroup>
-</DropdownMenuContent>
+                                        <DropdownMenuItem
+                                            onClick={handleLogout}
+                                            disabled={logout.isPending}
+                                        >
+                                            <LogOut />
+                                            {logout.isPending
+                                                ? "Signing out..."
+                                                : "Log out"}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
                             </DropdownMenu>
                         </SidebarMenuItem>
                     </SidebarMenu>
